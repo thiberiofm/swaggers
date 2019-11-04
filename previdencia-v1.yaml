@@ -1,0 +1,1907 @@
+swagger: '2.0'
+info:
+  description: API Previdência - Zurich Santander
+  version: 3.0.2
+  title: API - Previdência
+  contact:
+    name: Carlos Bispo
+    email: cjunior@prservicos.com.br
+host: 'aamapimanager.santanderbr.pre.corp:8065'
+basePath: /api/prev/v1
+tags:
+  - name: Listas
+  - name: Adesão
+  - name: Produtos
+  - name: Clientes
+  - name: Cancelamento
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /tipos/rendas:
+    get:
+      tags:
+        - Listas
+      summary: Retorna lista de tipos de rendas
+      description: Retorna lista de tipos de rendas.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                codigoParametrizado:
+                  description: Código do tipo de renda parametrizado para faixa.
+                  type: string
+                  example: '1'
+                  maximum: 3
+                indicadorRendaPadrao:
+                  description: Indicador de renda padrão.
+                  type: string
+                  example: S
+                  enum:
+                    - S
+                    - 'N'
+                  maximum: 1
+                sigla:
+                  description: Sigla do tipo de renda.
+                  type: string
+                  example: VIT
+                  maximum: 3
+                detalhes:
+                  description: Mensagem explicativa do tipo de renda.
+                  type: string
+                  example: Consiste em uma renda paga vitalícia e exclusivamente ao titular do plano a partir da data de concessão do benefício. O benfício cessa com o falecimento do titular.
+                  maximum: 280
+                descricao:
+                  description: Descrição do título da definição do tipo de renda.
+                  type: string
+                  example: Renda Mensal Vitalícia.
+                  maximum: 40
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /tipos/tributacoes:
+    get:
+      tags:
+        - Listas
+      summary: Retorna lista de tipos de tributações
+      description: Retorna lista de tipos de tributações.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                tipoDeclaracaoImpostoRenda:
+                  description: Tipo de declaração de imposto de renda.
+                  type: string
+                  example: ''
+                  maximum: 20
+                descricaoImpostoUtilizacaoRecursos:
+                  description: ''
+                  type: string
+                  example: ''
+                  maximum: 20
+                tipoImposto:
+                  description: Tipo do imposto de renda.
+                  type: string
+                  example: Regressiva
+                  maximum: 11
+                identificadorImpostoPadrao:
+                  description: Identificador de imposto padrão.
+                  type: boolean
+                  example: true
+                  enum:
+                    - true
+                    - false
+                  maximum: 5
+                descricao:
+                  description: Descrição da tributação.
+                  type: string
+                  example: 'Na tributação regressiva, as alíquotas vão diminuindo de acordo com o tempo de investimento e não há compensação (abatimento) na declaração de ajuste anual do IR. A alíquota inicia em 35%, chegando a reduzir para 10% em períodos acima de 10 anos.'
+                  maximum: 350
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /adesao/validacao-1:
+    post:
+      tags:
+        - Adesão
+      summary: Realiza validação de dados básicos
+      description: Realiza validaçao de dados básicos.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          description: Body
+          required: true
+          schema:
+            type: object
+            properties:
+              adesao:
+                type: object
+                properties:
+                  codigoCliente:
+                    description: Código do cliente conforme cadastro de clientes.
+                    type: string
+                    example: '102074889'
+                    maximum: 10
+                  codigoProduto:
+                    description: Código do produto.
+                    type: string
+                    example: '1000'
+                    maximum: 4
+                  codigoCanalOrigem:
+                    description: Código de canal de origem.
+                    type: string
+                    example: '52'
+                    maximum: 4
+                  dataAposentadoria:
+                    description: Data da aposentadoria.
+                    type: string
+                    example: '2039-07-21'
+                    format: date
+                    pattern: YYYY-MM-DD
+                    maximum: 10
+                  tipoTributacao:
+                    description: Tipo de tributação.
+                    type: string
+                    example: TP
+                    maximum: 4
+                  beneficios:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        codigoPlano:
+                          description: Código do plano.
+                          type: string
+                          example: '1'
+                          maximum: 10
+                        codigo:
+                          description: Código do benefício.
+                          type: string
+                          example: '110'
+                          maximum: 5
+                        tipo:
+                          description: Tipo de benefício.
+                          type: string
+                          example: PR
+                          maximum: 3
+                        prazoDesejado:
+                          description: Prazo desejado.
+                          type: string
+                          example: '30'
+                          maximum: 3
+                        tipoRenda:
+                          description: Tipo de renda.
+                          type: string
+                          example: '1'
+                          maximum: 10
+              portabilidade:
+                type: object
+                properties:
+                  codigoCertificado:
+                    description: Codigo do certificado.
+                    type: string
+                    example: '1564484'
+                    maximum: 10
+                  indicador:
+                    description: Indicador de portabilidade.
+                    type: string
+                    example: 'N'
+                    maximum: 1
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 10
+                  descricao:
+                    description: Mensagem de retorno.
+                    type: string
+                    example: Descricao do retorno.
+                    maximum: 50
+              dados:
+                type: object
+                properties:
+                  numeroFormularioAdesao:
+                    description: Número do formulário de adesão.
+                    type: string
+                    example: '2319870'
+                    maximum: 20
+                  numeroFormularioPortabilidade:
+                    description: Numero de formulário de portabilidade.
+                    type: string
+                    example: '7243109842319870'
+                    maximum: 20
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /adesao/validacao-2:
+    post:
+      tags:
+        - Adesão
+      summary: Realiza validação de beneficiários
+      description: Realiza validaçao de beneficiários.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          description: Body
+          required: true
+          schema:
+            type: object
+            properties:
+              adesao:
+                type: object
+                properties:
+                  formulario:
+                    type: object
+                    properties:
+                      numero:
+                        description: Número do formulário de adesão.
+                        type: string
+                        example: '401423234'
+                        maximum: 20
+                  codigoCliente:
+                    description: Código do cliente conforme cadastro de clientes.
+                    type: string
+                    example: '102074889'
+                    maximum: 10
+                  codigoProduto:
+                    description: Código do produto.
+                    type: string
+                    example: '1000'
+                    maximum: 5
+                  codigoCanalOrigem:
+                    description: Código do canal de origem.
+                    type: string
+                    example: '52'
+                    maximum: 3
+                  dataAposentadoria:
+                    description: Data da aposentadoria
+                    type: string
+                    example: '2039-07-21'
+                    format: date
+                    pattern: YYYY-MM-DD
+                    maximum: 10
+                  beneficios:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        codigoPlano:
+                          description: Código do plano.
+                          type: string
+                          example: '1'
+                          maximum: 10
+                        codigo:
+                          description: Código do benefício.
+                          type: string
+                          example: '110'
+                          maximum: 5
+                        herdeiroLegalIndicado:
+                          description: Identificador de herdeiro legal indicado
+                          type: string
+                          example: 'N'
+                          maximum: 1
+                        beneficiarios:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              pessoa:
+                                type: object
+                                properties:
+                                  numeroDocumento:
+                                    description: Número do documento do beneficíario.
+                                    type: string
+                                    example: '99999999999'
+                                    maximum: 14
+                                  nome:
+                                    description: Nome do beneficiário.
+                                    type: string
+                                    example: ZE RICARDO
+                                    maximum: 100
+                                  genero:
+                                    description: Gênero do beneficiário.
+                                    enum:
+                                      - M
+                                      - F
+                                    type: string
+                                    example: M
+                                    maximum: 1
+                                  dataNascimento:
+                                    description: Data do nascimento do beneficiário.
+                                    type: string
+                                    example: '2010-01-01'
+                                    format: date
+                                    pattern: YYYY-MM-DD
+                                    maximum: 10
+                              porcentagemDistribuicao:
+                                description: Percentual de distribuição.
+                                type: string
+                                example: '100'
+                                maximum: 3
+                              codigoRelacionamento:
+                                description: Código de relacionamento
+                                type: string
+                                example: '2'
+                                maximum: 3
+              portabilidade:
+                type: object
+                properties:
+                  indicador:
+                    description: Indicador de portabilidade.
+                    type: string
+                    example: 'N'
+                    maximum: 1
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 10
+                  descricao:
+                    description: Mensagem de retorno.
+                    type: string
+                    example: Descricao do retorno.
+                    maximum: 50
+              dados:
+                type: object
+                properties:
+                  numeroFormularioAdesao:
+                    description: Número do formulário de adesão.
+                    type: string
+                    example: '2319870'
+                    maximum: 20
+                  numeroFormularioPortabilidade:
+                    description: Numero de formulário de portabilidade.
+                    type: string
+                    example: '7243109842319870'
+                    maximum: 20
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /adesao/validacao-3:
+    post:
+      tags:
+        - Adesão
+      summary: Realiza validaçao de dados de pagamento
+      description: Realiza validaçao de dados de pagamento.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          description: Body
+          required: true
+          schema:
+            type: object
+            properties:
+              adesao:
+                type: object
+                properties:
+                  formulario:
+                    type: object
+                    properties:
+                      numero:
+                        type: string
+                        example: '401423234'
+                        maximum: 20
+                  codigoCliente:
+                    description: Código do cliente conforme cadastro de clientes.
+                    type: string
+                    example: '102074889'
+                    maximum: 10
+                  codigoProduto:
+                    description: Código do produto.
+                    type: string
+                    example: '3141'
+                    maximum: 5
+                  codigoCanalOrigem:
+                    description: Codigo do origem canal.
+                    type: string
+                    example: '52'
+                    maximum: 3
+                  dataAposentadoria:
+                    description: Data da aposentadoria.
+                    type: string
+                    example: '2039-07-21'
+                    format: date
+                    pattern: YYYY-MM-DD
+                    maximum: 10
+                  tipoTributacao:
+                    description: Tipo de tributação.
+                    type: string
+                    example: TP
+                    maximum: 4
+                  beneficios:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        codigoPlano:
+                          description: Código do plano.
+                          type: string
+                          example: '1'
+                          maximum: 10
+                        codigo:
+                          description: Código do benefício.
+                          type: string
+                          example: '110'
+                          maximum: 5
+                        tipo:
+                          description: Tipo de benefício.
+                          type: string
+                          example: PR
+                          maximum: 4
+                        valorContribuicaoMensal:
+                          description: Valor de contribuição mensal.
+                          type: number
+                          example: 25000.52
+                          maximum: 21
+                        valorContribuicaoInicial:
+                          description: Valor de contribuição inicial.
+                          type: number
+                          example: 1000.98
+                          maximum: 21
+                        tipoRenda:
+                          type: string
+                          example: '1'
+                          maximum: 5
+                        reservas:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              codigo:
+                                description: Código de reserva.
+                                type: string
+                                example: '1028'
+                                maximum: 5
+                              fundos:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    codigo:
+                                      description: Código de fundo.
+                                      type: string
+                                      example: '1'
+                                      maximum: 10
+                                    porcentagemDistribuicao:
+                                      description: Percentual de distribuição.
+                                      type: string
+                                      example: '1'
+                                      maximum: 3
+                  pagamentos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        colecaoTipoCanal:
+                          description: Tipo de canal de coleção.
+                          type: string
+                          example: '504'
+                          maximum: 3
+                        codigoCanal:
+                          description: Código de canal.
+                          type: string
+                          example: '33'
+                          maximum: 4
+                        data:
+                          description: Data do pagamento.
+                          type: string
+                          example: '2019-02-28'
+                          format: date
+                          pattern: YYYY-MM-DD
+                          maximum: 10
+                        dia:
+                          description: Dia de pagamento.
+                          type: string
+                          example: '15'
+                          maximum: 2
+                        metodo:
+                          description: Método de pagamento.
+                          type: string
+                          example: FC
+                          maximum: 5
+                        indicadorInicial:
+                          description: Indicador inicial.
+                          type: string
+                          example: S
+                          maximum: 1
+                        conta:
+                          type: object
+                          properties:
+                            codigoBanco:
+                              description: Código do banco.
+                              type: string
+                              example: '55'
+                              maximum: 4
+                            codigoAgencia:
+                              description: Código da agência.
+                              type: string
+                              example: '12345'
+                              maximum: 5
+                            digitoAgencia:
+                              description: Dígito da agência.
+                              type: string
+                              example: '8'
+                              maximum: 1
+                            numero:
+                              description: Número da conta.
+                              type: string
+                              example: '1234567'
+                              maximum: 10
+                            digito:
+                              description: Dígito da conta.
+                              type: string
+                              example: '7'
+                              maximum: 1
+              portabilidade:
+                type: object
+                properties:
+                  codigoCertificado:
+                    description: Codigo do certificado.
+                    type: string
+                    example: '1564484'
+                    maximum: 10
+                  indicador:
+                    description: Indicador de portabilidade.
+                    type: string
+                    example: 'N'
+                    maximum: 1
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 10
+                  descricao:
+                    description: Mensagem de retorno.
+                    type: string
+                    example: Descricao do retorno.
+                    maximum: 50
+              dados:
+                type: object
+                properties:
+                  numeroFormularioAdesao:
+                    description: Número do formulário de adesão.
+                    type: string
+                    example: '2319870'
+                    maximum: 20
+                  numeroFormularioPortabilidade:
+                    description: Numero de formulário de portabilidade.
+                    type: string
+                    example: '7243109842319870'
+                    maximum: 20
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /adesao/validacao-4:
+    post:
+      tags:
+        - Adesão
+      summary: Realiza validaçao de WorkFlow
+      description: Realiza validaçao de WorkFlow.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          description: Body
+          required: true
+          schema:
+            type: object
+            properties:
+              adesao:
+                type: object
+                properties:
+                  formulario:
+                    type: object
+                    properties:
+                      numero:
+                        type: string
+                        example: '401423234'
+                        maximum: 20
+                  codigoCliente:
+                    description: Código do cliente conforme cadastro de clientes.
+                    type: string
+                    example: '102074889'
+                    maximum: 10
+                  codigoCanalOrigem:
+                    description: Código do canal de origem.
+                    type: string
+                    example: '52'
+                    maximum: 4
+              portabilidade:
+                type: object
+                properties:
+                  indicador:
+                    description: Indicador de portabilidade.
+                    type: string
+                    example: 'N'
+                    maximum: 1
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 10
+                  descricao:
+                    description: Mensagem de retorno.
+                    type: string
+                    example: Descricao do retorno.
+                    maximum: 50
+              dados:
+                type: object
+                properties:
+                  numeroFormularioAdesao:
+                    description: Número do formulário de adesão.
+                    type: string
+                    example: '2319870'
+                    maximum: 20
+                  numeroFormularioPortabilidade:
+                    description: Numero de formulário de portabilidade.
+                    type: string
+                    example: '7243109842319870'
+                    maximum: 20
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /produtos:
+    get:
+      tags:
+        - Produtos
+      summary: Retorna lista de produtos
+      description: Retorna lista de produtos.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: query
+          name: dataNascimento
+          type: string
+          description: 'Data do Nascimento. (ex: aaaa-mm-dd)'
+          required: true
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                retorno:
+                  type: object
+                  properties:
+                    codigo:
+                      description: Código de retorno.
+                      type: string
+                      example: I00006
+                      maximum: 10
+                    decricao:
+                      description: Descrição do retorno.
+                      type: string
+                      example: I00006
+                      maximum: 50
+                codigoProduto:
+                  description: Código do produto.
+                  type: string
+                  example: '2088'
+                  maximum: 5
+                codigoFamilia:
+                  description: Código da família.
+                  type: string
+                  example: '11'
+                  maximum: 2
+                nomeProduto:
+                  description: Nome do produto.
+                  type: string
+                  example: Prev Pi VGBL
+                  maximum: 20
+                codigoModalidade:
+                  description: Código da modalidade do produto.
+                  type: string
+                  example: VGBL
+                  maximum: 4
+                saldoGeral:
+                  description: Saldo geral.
+                  type: number
+                  example: 25645.68
+                  maximum: 21
+                fundos:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      codigo:
+                        description: Código do fundo.
+                        type: string
+                        example: '1156'
+                        maximum: 5
+                      nome:
+                        description: Nome do fundo.
+                        type: string
+                        example: SANTANDER MULTIMERCADO ADAM PREVIDÊNCIA FI
+                        maximum: 100
+                      numeroDocumento:
+                        description: Número do documento.
+                        type: string
+                        example: 08545621000162
+                        maximum: 14
+                      tipo:
+                        description: Tipo do fundo.
+                        type: string
+                        example: CO
+                        maximum: 2
+                      perfil:
+                        type: string
+                        example: AGRESSIVO
+                        maximum: 10
+                      taxaAdministrativa:
+                        type: string
+                        example: '2'
+                        maximum: 10
+                      contribuicao:
+                        type: object
+                        properties:
+                          valorMinimoInicial:
+                            type: number
+                            example: 0
+                            maximum: 21
+                          valorMinimoMensal:
+                            type: number
+                            example: 0
+                            maximum: 21
+                      rentabilidade:
+                        type: object
+                        properties:
+                          dozeMeses:
+                            type: number
+                            example: 13.28
+                            maximum: 21
+                          vinteQuatroMeses:
+                            type: number
+                            example: 5.55
+                            maximum: 21
+                          trintaSeisMeses:
+                            type: number
+                            example: 5.55
+                            maximum: 21
+                          mesAnterior:
+                            type: number
+                            example: 0.33
+                            maximum: 21
+                          mesCorrente:
+                            type: number
+                            example: 0.73
+                            maximum: 21
+                          anoAnterior:
+                            type: number
+                            example: -1.85
+                            maximum: 21
+                          anoCorrente:
+                            type: number
+                            example: 7.54
+                            maximum: 21
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  '/familias/{codigoFamilia}/produtos/{codigoProduto}':
+    get:
+      tags:
+        - Produtos
+      summary: 'Retorna detalhes do produto. '
+      description: Retorna detalhes do produto.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: path
+          name: codigoFamilia
+          type: string
+          description: 'Código de familia. (ex: 11)'
+          required: true
+        - in: path
+          name: codigoProduto
+          type: string
+          description: 'Código de produto. (ex: 3141)'
+          required: true
+        - in: query
+          name: dataNascimento
+          type: string
+          description: 'Data de nascimento. (ex: aaaa-mm-dd)'
+          required: true
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              codigoProduto:
+                type: string
+                description: Código do produto.
+                example: '3141'
+                maximum: 20
+              descricaoProduto:
+                description: Descrição do produto.
+                type: string
+                example: PGBL Pi - Teste
+                maximum: 50
+              modalidadeProduto:
+                description: Modalidade do produto.
+                type: string
+                example: PGBL
+                maximum: 20
+              horaLimite:
+                description: Hora limite.
+                type: string
+                example: '18:00'
+                pattern: 'HH:MM'
+                maximum: 20
+              indicadorBeneficiarioObrigatorio:
+                description: Indicador de beneficiário obrigatório.
+                type: string
+                example: 'N'
+                maximum: 1
+              quantidadeMaximaBeneficiario:
+                description: Quantidade Máxima de benericiários.
+                type: integer
+                example: 10
+                maximum: 4
+              idadeMinimaAposentadoria:
+                description: Idade mínima de aposentadoria.
+                type: integer
+                example: 28
+                maximum: 3
+              idadeMaximaAposentadoria:
+                type: integer
+                example: 115
+                maximum: 3
+              idadeMaximaCrianca:
+                description: Idade maxima de aposentadoria.
+                type: integer
+                example: 0
+                maximum: 2
+              beneficios:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    codigo:
+                      description: Código de benefício.
+                      type: string
+                      example: '1'
+                      maximum: 20
+                    descricao:
+                      description: Descrição de benefício.
+                      type: string
+                      example: SANTANDER PERV PGBL PF
+                      maximum: 50
+                    codigoPlano:
+                      description: Código do plano.
+                      type: string
+                      example: '72'
+                      maximum: 20
+                    codigoReserva:
+                      description: Código de reserva.
+                      type: string
+                      example: '1000'
+                      maximum: 20
+                    tipo:
+                      type: object
+                      properties:
+                        codigo:
+                          description: Código do tipo de benefício.
+                          type: string
+                          example: '1'
+                          maximum: 20
+                        descricao:
+                          description: Descrição do tipo de benefício.
+                          type: string
+                          example: Benefício destinado à aposentadoria.
+                          maximum: 50
+                    pagamento:
+                      type: object
+                      properties:
+                        codigo:
+                          description: Código de pagamento.
+                          type: string
+                          example: '1'
+                          maximum: 20
+                    cobertura:
+                      type: object
+                      properties:
+                        codigoCobertura:
+                          description: Código da cobertura.
+                          type: string
+                          example: '1'
+                          maximum: 20
+                        descricaoCobertura:
+                          description: Descrição da cobertura.
+                          type: string
+                          example: SOBREVIVENCIA
+                          maximum: 20
+                        tipoCobertura:
+                          description: Código do tipo de cobertura.
+                          type: string
+                          example: PR
+                          maximum: 20
+                        contribuicoes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              codigoContribuicao:
+                                description: Código de contribuição.
+                                type: string
+                                example: COINI
+                                maximum: 20
+                              descricaoContribuicao:
+                                description: Descrição de contribuição.
+                                type: string
+                                example: CONTRIBUICAO INICIAL
+                                maximum: 50
+                              indicadorObrigatorio:
+                                description: Indicador de obrigatóriedade de contribuição.
+                                type: string
+                                example: S
+                                enum:
+                                  - S
+                                  - 'N'
+                                maximum: 1
+                              origem:
+                                description: Código de oridem de contribuição.
+                                type: string
+                                example: PTE
+                                maximum: 20
+                              sugestaoPrazo:
+                                description: Prazo sugerido.
+                                type: integer
+                                example: 30
+                                maximum: 4
+                              tipo:
+                                description: Tipo de contribuiçao.
+                                type: string
+                                example: IN
+                                maximum: 20
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /clientes/saldo:
+    post:
+      tags:
+        - Clientes
+      summary: Consulta Saldo
+      description: Consulta Saldo.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          description: Body
+          required: true
+          schema:
+            type: object
+            properties:
+              numeroDocumento:
+                description: Número do documento do cliente.
+                type: string
+                example: '99999999999'
+                maximum: 10
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 10
+                  mensagem:
+                    description: Descrição do retorno.
+                    type: string
+                    example: Transação realizada com sucesso.
+                    maximum: 50
+              certificados:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    codigo:
+                      description: Código do certificado.
+                      type: string
+                      example: '2059876'
+                      maximum: 10
+                    numero:
+                      description: Número do certificado.
+                      type: integer
+                      example: 2059876
+                      maximum: 10
+                    status:
+                      description: Status do certificado.
+                      type: string
+                      example: A
+                      maximum: 10
+                    dataReferenciaCertificado:
+                      description: Data de referência do certificado.
+                      type: string
+                      example: '2019-09-29'
+                      format: date
+                      pattern: YYY-MM-DD
+                      maximum: 10
+                    dataVendaCertificado:
+                      type: string
+                      example: '2019-07-29'
+                      format: date
+                      pattern: YYYY-MM-DD
+                      maximum: 10
+                    tipoCertificado:
+                      description: Tipo do certificado.
+                      type: string
+                      example: I
+                      maximum: 10
+                    saldoBrutoCertificado:
+                      description: Saldo bruto do certificado.
+                      type: number
+                      example: 60826.56
+                      maximum: 21
+                    valorEnvioCertificado:
+                      description: Valor do certificado.
+                      type: number
+                      example: 35415.93
+                      maximum: 21
+                    saldoLiquidoCertificado:
+                      description: Saldo líquido do certificado.
+                      type: number
+                      example: 1800.63
+                      maximum: 21
+                    valorImpostoRendaCertificado:
+                      description: Valor de imposto de renda do certificado.
+                      type: number
+                      example: 20659.36
+                      maximum: 21
+                    codigoBeneficio:
+                      description: Código do benefício.
+                      type: string
+                      example: 1/110
+                      maximum: 10
+                    detalhes:
+                      type: object
+                      properties:
+                        dataContratacao:
+                          description: Data de contratação.
+                          type: string
+                          example: '2019-07-26'
+                          format: date
+                          pattern: YYYY-MM-DD
+                          maximum: 10
+                        dataInicioImpostaRenda:
+                          description: Data de início de imposto de renda.
+                          type: string
+                          example: '2039-07-31'
+                          format: date
+                          pattern: YYYY-MM-DD
+                          maximum: 10
+                        dataInicioVigencia:
+                          description: Data de início da vigência.
+                          type: string
+                          example: '2019-09-29'
+                          format: date
+                          pattern: YYYY-MM-DD
+                          maximum: 10
+                        diaContribuicao:
+                          description: Dia de contribuição.
+                          type: integer
+                          example: 26
+                          maximum: 10
+                        limiteHora:
+                          description: Horário limite.
+                          type: string
+                          example: '18:00'
+                          maximum: 5
+                        valorCarenciaEntreResgates:
+                          description: Valor de carênicia entre resgates.
+                          type: integer
+                          example: 60
+                          maximum: 4
+                        valorCarenciaPrimeiroResgate:
+                          description: Valor de carencia do primeiro resgate..
+                          type: integer
+                          example: 60
+                          maximum: 4
+                        indicadorContribuicao:
+                          description: Indicator de contribuição.
+                          type: string
+                          example: S
+                          enum:
+                            - S
+                            - 'N'
+                          maximum: 10
+                        maximoDiasContribuicao:
+                          description: Máximo de dias de contribuição.
+                          type: integer
+                          example: 30
+                          maximum: 10
+                        produto:
+                          type: object
+                          properties:
+                            codigoProduto:
+                              description: Código do produto.
+                              type: string
+                              example: '1004'
+                              maximum: 10
+                            nomeProduto:
+                              description: Nome do produto.
+                              type: string
+                              example: SANTANDER PREV PGBL AFINIDADES
+                              maximum: 50
+                            modalidadeProduto:
+                              description: Modalidade do produto.
+                              type: string
+                              example: PGBL
+                              maximum: 10
+                        termo:
+                          description: Termo.
+                          type: string
+                          example: '12'
+                          maximum: 10
+                        regimeTaxacao:
+                          description: Regime de taxação.
+                          type: string
+                          example: Regressiva
+                          maximum: 10
+                        plano:
+                          type: object
+                          properties:
+                            statusPlano:
+                              description: Status do plano.
+                              type: string
+                              example: Ativo
+                              maximum: 10
+                            tipoPlano:
+                              description: Tipo de plano.
+                              type: string
+                              example: A
+                              maximum: 10
+                        tipoRenda:
+                          description: Tipo de renda.
+                          type: string
+                          example: Renda Mensal Vitalícia
+                          maximum: 10
+                        valorBeneficio:
+                          description: Valor do benefício.
+                          type: number
+                          example: 8.65
+                          maximum: 21
+                        valorCarencia:
+                          description: Valor de carência.
+                          type: number
+                          example: 50.65
+                          maximum: 10
+                        valorContribuicaoMensal:
+                          description: Valor de contribuição mensal.
+                          type: number
+                          example: 89.81
+                          maximum: 10
+                        valorMinimo:
+                          description: Valor mínimo.
+                          type: number
+                          example: 105
+                          maximum: 10
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /clientes:
+    post:
+      tags:
+        - Clientes
+      summary: Realiza cadatro de cliente
+      description: Realiza cadastro de cliente
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          schema:
+            type: object
+            properties:
+              codigo:
+                description: Código do cliente na PI.
+                type: string
+                example: '10243439'
+                maximum: 10
+              nome:
+                description: Nome do cliente.
+                type: string
+                example: João Paulo Silva
+                maximum: 50
+              profissao:
+                description: Código da profissão do cliente.
+                type: string
+                example: '1203'
+                maximum: 5
+              codigoEstadoCivil:
+                description: Código do estado civil do cliente.
+                type: string
+                example: C
+                enum:
+                  - C
+                  - S
+                  - V
+                  - D
+                  - U
+                  - O
+                  - B
+                  - I
+                  - P
+                  - T
+                  - A
+                maximum: 1
+              genero:
+                description: Gênero do cliente.
+                type: string
+                example: M
+                enum:
+                  - M
+                  - F
+                maximum: 1
+              dataNascimento:
+                description: Data de nascimento do cliente.
+                type: string
+                example: '1990-08-05'
+                format: date
+                pattern: YYYY-MM-DD
+                maximum: 10
+              estadoNascimento:
+                description: Código do estado de nascimento do cliente.
+                type: string
+                example: '3245'
+                maximum: 10
+              codigoNacionalidade:
+                description: Código da nacionalidade do cliente.
+                type: string
+                example: BR
+                maximum: 2
+              telefone:
+                type: object
+                properties:
+                  ddd:
+                    description: DDD do telefone do cliente.
+                    type: string
+                    example: '11'
+                    maximum: 2
+                  numero:
+                    description: Número de telefone do cliente.
+                    type: string
+                    example: '986253475'
+                    maximum: 9
+              email:
+                description: Endereço de e-mail do cliente.
+                type: string
+                example: cliente@previdencia.com.br
+                maximum: 60
+              valorRenda:
+                description: Valor de renda do cliente.
+                type: number
+                example: 8562.65
+                maximum: 21
+              valorCapital:
+                description: Valor de capital do cliente.
+                type: number
+                example: 18562.65
+                maximum: 21
+              flagPEP:
+                description: Indicador de Pessoa politicamente exposta.
+                type: string
+                example: NP
+                enum:
+                  - NP
+                  - SO
+                maximum: 2
+              endereco:
+                type: object
+                properties:
+                  logradouro:
+                    description: Nome do logradouro.
+                    type: string
+                    example: Engenheiro Roberto Marinho
+                    maximum: 160
+                  numero:
+                    description: Número do logradouro.
+                    type: string
+                    example: '5000'
+                    maximum: 10
+                  tipoLogradouro:
+                    description: Tipo de logradouro.
+                    type: string
+                    example: Avenida
+                    maximum: 10
+                  complemento:
+                    description: Complemento endereço.
+                    type: string
+                    example: Conjunto 102
+                    maximum: 50
+                  bairro:
+                    description: Bairro da residência.
+                    type: string
+                    example: Itaim Bibi
+                    maximum: 50
+                  codigoCidade:
+                    description: Código da cidade da residência.
+                    type: string
+                    example: '36302'
+                    maximum: 5
+                  codigoEstado:
+                    description: Código do estado da residência.
+                    type: string
+                    example: SP
+                    maximum: 2
+                  cep:
+                    description: CEP da residência.
+                    type: string
+                    example: '02335000'
+                    maximum: 8
+                  codigoPais:
+                    description: Código do país da residência.
+                    type: string
+                    example: '105'
+                    maximum: 3
+              documentos:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    numero:
+                      description: Número do documento.
+                      type: string
+                      example: '243661100'
+                      maximum: 20
+                    dataEnvio:
+                      description: Data de envio do documento.
+                      type: string
+                      example: '2010-10-10'
+                      format: date
+                      pattern: YYYY-MM-DD
+                      maximum: 10
+                    orgaoEmissor:
+                      description: Órgão emissor do documento.
+                      type: string
+                      example: SSP
+                      maximum: 3
+                    tipo:
+                      description: Código do tipo de documento.
+                      type: string
+                      example: '1'
+                      enum:
+                        - '1'
+                        - '2'
+                      maximum: 5
+                    estadoEmissor:
+                      description: Código do estado emissor.
+                      type: string
+                      example: SP
+                      maximum: 2
+                    paisOrigem:
+                      description: Código do país de origem.
+                      type: string
+                      example: '105'
+                      maximum: 3
+              pessoaEstrangeira:
+                type: object
+                properties:
+                  USPerson:
+                    description: Indicador de pessoa estrangeira.
+                    type: string
+                    example: S
+                    enum:
+                      - S
+                      - 'N'
+                    maximum: 1
+                  tinNumber:
+                    description: Número de identificação do contribuinte.
+                    type: string
+                    example: '653298'
+                    maximum: 12
+                  enderecoCobranca:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        numeroIdentificador:
+                          description: Número identificador.
+                          type: string
+                          example: '1264654'
+                          maximum: 20
+                        pais:
+                          description: Código do país.
+                          type: string
+                          example: '206'
+                          maximum: 3
+          required: true
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 60
+                  mensagem:
+                    description: Mensagem de retorno.
+                    type: string
+                    example: Transação efetuada com sucesso.
+                    maximum: 60
+              dados:
+                type: object
+                properties:
+                  codigoCliente:
+                    description: Código do cliente cadastrado.
+                    type: string
+                    example: '10243439'
+                    maximum: 10
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /certificados/cancelamento:
+    post:
+      tags:
+        - Cancelamento
+      summary: Realiza um cancelamento
+      description: Realiza um cancelamento.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          schema:
+            type: object
+            properties:
+              numeroDocumento:
+                description: Número do documento.
+                type: string
+                example: '99999999999'
+                maximum: 14
+              numeroCertificado:
+                description: Número do certificado.
+                type: string
+                example: '2059876'
+                maximum: 10
+              descricaoMotivo:
+                description: Descrição do motivo do cancelamento.
+                type: string
+                example: XXXXXXXXXXXXXXXX
+                maximum: 150
+          required: true
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 10
+                  mensagem:
+                    description: Mensagem de retorno.
+                    type: string
+                    example: Transação efetuada com sucesso.
+                    maximum: 60
+              dados:
+                type: object
+                properties:
+                  codigoDossie:
+                    description: Código de Dossie.
+                    type: string
+                    example: '12345'
+                    maximum: 10
+                  codigoRequisicaoCancelamento:
+                    description: Código de requisição de cancelamento.
+                    type: string
+                    example: '12345'
+                    maximum: 10
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+  /formalizacao:
+    post:
+      tags:
+        - Formalizacao
+      summary: Realiza formalizacao
+      description: Realiza formalizacao.
+      parameters:
+        - in: header
+          name: X-API-KEY
+          type: string
+          description: 929b338a-c240-48ba-9d78-314f88e71f36
+          required: true
+        - in: body
+          name: Payload
+          description: Body
+          required: true
+          schema:
+            type: object
+            required:
+              - codigoFormalizacao
+              - imperativoContratacao
+            properties:
+              autenticacao:
+                type: object
+                required:
+                  - codigo
+                  - tipo
+                properties:
+                  codigo:
+                    description: Código de autenticação.
+                    type: string
+                    example: FDA012125257255E14B8
+                    maximum: 50
+                  tipo:
+                    description: Tipo de autenticação.
+                    type: string
+                    example: SID
+                    maximum: 4
+              codigoFormalizacao:
+                description: Código de formalização.
+                type: string
+                example: '121252'
+                maximum: 10
+              imperativoContratacao:
+                description: Imperativo de contratação.
+                type: object
+                properties:
+                  numeroFormularioAdesao:
+                    description: Número do formulário de adesão.
+                    type: string
+                    example: '323252'
+                    maximum: 20
+                  email:
+                    description: endereço de e-mail do cliente.
+                    type: string
+                    example: exemplo@exemplo.com.br
+                    maximum: 100
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          schema:
+            type: object
+            properties:
+              retorno:
+                type: object
+                properties:
+                  codigo:
+                    description: Código de retorno.
+                    type: string
+                    example: I00006
+                    maximum: 60
+                  mensagem:
+                    description: Mensagem de retorno.
+                    type: string
+                    example: Transação efetuada com sucesso.
+                    maximum: 60
+              codigoAdesao:
+                description: Código de adesão.
+                type: string
+                example: '401425288'
+                maximum: 10
+              codigoCertificado:
+                description: Código de certificado.
+                type: string
+                example: '2059745'
+                maximum: 10
+              dadosImperativaContratacao:
+                type: object
+                properties:
+                  numeroCertificado:
+                    description: Número de certificado.
+                    type: integer
+                    example: 2059745
+                    maximum: 20
+                  aplicacaoInicial:
+                    description: Valor de aplicação inicial.
+                    type: number
+                    example: 100.56
+                    maximum: 21
+                  dataPrimeiraAplicacao:
+                    description: Data da primeira aplicação.
+                    type: string
+                    example: '2019-07-23T00:00:00.000Z'
+                    maximum: 10
+                  aplicacoesMensais:
+                    description: Aplicações mensais.
+                    type: number
+                    example: 10000.66
+                    maximum: 21
+                  diaAplicacoesMensais:
+                    description: Dia de aplicação mensal.
+                    type: integer
+                    example: 22
+                    maximum: 10
+              avisoLegal:
+                description: Aviso legal.
+                type: string
+                example: ''
+                maximum: 100
+        '400':
+          description: Requisição HTTP inválida
+          schema:
+            $ref: '#/definitions/ApiErro'
+        '401':
+          description: Acesso negado - Credencial Inválida
+        '403':
+          description: Recurso não autorizado
+        '404':
+          description: Nenhum registro encontrado
+        '405':
+          description: Metódo HTTP não permitido
+        '422':
+          description: Entidade não acessível
+        '500':
+          description: Serviço indisponível
+definitions:
+  ApiErro:
+    type: object
+    properties:
+      timestamp:
+        type: string
+        format: datetime
+        example: '2018-08-20T15:00:00Z'
+      codigo:
+        type: string
+        example: Z001
+      mensagem:
+        type: string
+        example: Estrutura JSON incorreta.
+      detalhes:
+        type: array
+        items:
+          type: object
+          properties:
+            atributo:
+              type: string
+              example: objeto.atributo
+            mensagem:
+              type: string
+              example: 'instance type (integer) does not match any allowed primitive type (allowed: ["string"])'
